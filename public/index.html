@@ -2,42 +2,240 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" href="%PUBLIC_URL%/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
-      name="description"
-      content="Web site created using create-react-app"
+      name="google-site-verification"
+      content="BtBz-JR3TkxQ8kETktv39ICSdFrilVMPBIM_lcZTyUg"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+    <meta
+      name="description"
+      content="Nepali Current Date and Time. You can now quickly see the nepali current date and time."
+    />
+    <meta
+      name="keywords"
+      content="nepali,nepal,date,time,nepali date,nepali time,current date,current time,nepal date, nepal time"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
+    <title>Nepali Date & Time</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <div class="App" id="app-id">
+      <div class="toggler-container">
+        <img
+          src="%PUBLIC_URL%/sun.png"
+          class="toggle-theme-pic"
+          onclick="toggleTheme(this)"
+        />
+        <span id="toggle-text">Sun</span>
+      </div>
+      <div class="nepali__calender__container">
+        <img class="logo" src="%PUBLIC_URL%/logo.png" alt="nepal-flag" />
+        <div id="clock-id" class="clock"></div>
+        <div class="nepali__date">
+          <span id="month-unicode"></span>
+          <span id="day-id"></span>
+          <span id="year-id"></span>
+          <span id="day-unicode"></span>
+          <br />
+          <span id="english-date"></span>
+        </div>
+      </div>
+      <div class="contact">
+        <span>Developed By: </span>
+        <a href="https://rajsahani.com.np" target="_blank" rel="noreferrer">
+          Raj Sahani
+        </a>
+      </div>
+    </div>
+    <script
+      src="%PUBLIC_URL%/nepali-functions.min.js"
+      type="text/javascript"
+    ></script>
+    <script>
+      function showTime() {
+        var date = new Date();
+        var h = date.getHours(); // 0 - 23
+        var m = date.getMinutes(); // 0 - 59
+        var s = date.getSeconds(); // 0 - 59
+        var session = "AM";
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+        if (h == 0) {
+          h = 12;
+        }
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+        if (h > 12) {
+          h = h - 12;
+          session = "PM";
+        }
+
+        h = h < 10 ? "0" + h : h;
+        m = m < 10 ? "0" + m : m;
+        s = s < 10 ? "0" + s : s;
+
+        var time = h + ":" + m + ":" + s + " " + session;
+
+        document.getElementById("clock-id").innerText = time;
+
+        setTimeout(showTime, 1000);
+      }
+
+      function toggleTheme(e) {
+        let app = document.getElementById("app-id");
+        let clk = document.getElementById("clock-id");
+        let toggleText = document.getElementById("toggle-text");
+
+        if (
+          app.classList.value.includes("darktheme") ||
+          clk.classList.value.includes("black-color")
+        ) {
+          app.classList.remove("darktheme");
+          e.classList.remove("lighttheme");
+          e.src = "%PUBLIC_URL%/sun.png";
+          toggleText.innerText = "Sun";
+          clk.classList.remove("black-color");
+        } else {
+          app.classList.add("darktheme");
+          e.classList.add("lighttheme");
+          e.src = "%PUBLIC_URL%/moon.png";
+          toggleText.innerText = "Moon";
+          clk.classList.add("black-color");
+        }
+      }
+
+      window.onload = () => {
+        var dayUnicodeDoc = document.getElementById("day-unicode");
+        var monthDoc = document.getElementById("month-unicode");
+        var dayDoc = document.getElementById("day-id");
+        var yearDoc = document.getElementById("year-id");
+        var engDate = document.getElementById("english-date");
+        let today = new Date().toLocaleDateString().split("/");
+        engDate.innerText = new Date().toDateString();
+
+        const np = NepaliFunctions.AD2BS({
+          year: today[2],
+          month: today[0],
+          day: today[1],
+        });
+
+        const dayUnicode = NepaliFunctions.GetBsFullDayInUnicode(np);
+        const monthUnicode = NepaliFunctions.GetBsMonthInUnicode(np.month - 1);
+
+        dayDoc.innerText = NepaliFunctions.ConvertToUnicode(np.day) + " गते,";
+        yearDoc.innerText = NepaliFunctions.ConvertToUnicode(np.year);
+        monthDoc.innerText = monthUnicode;
+        dayUnicodeDoc.innerText = dayUnicode;
+        showTime();
+      };
+    </script>
+
+    <style>
+      .darktheme {
+        background-color: white !important;
+        color: black !important;
+      }
+
+      .lighttheme {
+        color: white !important;
+      }
+
+      .black-color {
+        color: black !important;
+      }
+
+      .toggler-container {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        right: 10px;
+        top: 10px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: 0.5s all;
+      }
+
+      .toggle-theme-pic {
+        width: 60px;
+        object-fit: contain;
+      }
+
+      .toggler-container span {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .App {
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow-y: auto;
+        background-color: black;
+        color: #17d4fe;
+        transition: 0.8s all;
+      }
+      .nepali__calender__container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: inherit;
+        height: inherit;
+      }
+      .clock {
+        color: #17d4fe;
+        font-size: 8vw;
+        font-family: Orbitron;
+        letter-spacing: 7px;
+        transition: 1s all;
+      }
+
+      .nepali__date span {
+        font-size: 4.5vw;
+        padding: 0 6px;
+      }
+
+      #english-date {
+        font-size: 3vw;
+      }
+
+      .logo {
+        width: 150px;
+        object-fit: contain;
+        border-radius: 10px;
+      }
+
+      .contact {
+        position: fixed;
+        bottom: 1rem;
+        right: 0;
+        padding: 0 1rem;
+      }
+
+      .contact a {
+        text-decoration: none;
+        color: #17d4fe;
+        font-size: 20px;
+      }
+
+      @media (min-width: 576px) and (max-width: 767.98px) {
+        .clock {
+          font-size: 40px;
+        }
+
+        .nepali__date span {
+          font-size: 30px;
+        }
+
+        #english-date {
+          font-size: 20px;
+        }
+      }
+    </style>
   </body>
 </html>
